@@ -6,45 +6,46 @@ public class Counter : MonoBehaviour
 {
     public event Action<int> ValueChanged;
 
-    [SerializeField] private MouseController mouseController;
+    [SerializeField] private MouseController _mouseController;
+    [SerializeField] private WaitForSeconds _wait = new WaitForSeconds(0.5f);
 
-    private int currentValue;
-    private bool isRunning;
-    private Coroutine countingCoroutine;
+    private int _currentValue;
+    private bool _isRunning;
+    private Coroutine _countingCoroutine;
 
     private void OnEnable()
     {
-        if (mouseController != null)
-            mouseController.ButtonClicked += HandleButtonClicked;
+        if (_mouseController != null)
+            _mouseController.ButtonClicked += HandleButtonClicked;
     }
 
     private void OnDisable()
     {
-        if (mouseController != null)
-            mouseController.ButtonClicked -= HandleButtonClicked;
+        if (_mouseController != null)
+            _mouseController.ButtonClicked -= HandleButtonClicked;
     }
 
     private void HandleButtonClicked()
     {
-        isRunning = !isRunning;
+        _isRunning = !_isRunning;
 
-        if (isRunning)
+        if (_isRunning)
         {
-            countingCoroutine = StartCoroutine(CountUp());
+            _countingCoroutine = StartCoroutine(CountUp());
         }
         else
         {
-            StopCoroutine(countingCoroutine);
+            StopCoroutine(_countingCoroutine);
         }
     }
 
     private IEnumerator CountUp()
     {
-        while (isRunning)
+        while (_isRunning)
         {
-            yield return new WaitForSeconds(0.5f);
-            currentValue++;
-            ValueChanged?.Invoke(currentValue);
+            yield return _wait;
+            _currentValue++;
+            ValueChanged?.Invoke(_currentValue);
         }
     }
 }
